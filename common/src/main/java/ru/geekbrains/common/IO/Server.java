@@ -1,4 +1,4 @@
-package IO;
+package ru.geekbrains.common.IO;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -25,7 +25,7 @@ public class Server {
             byte [] buffer = new byte[BUFFER_SIZE];
             while(true){
                 int readSize = is.read(buffer);
-                if (readSize == -1) break; 
+                if (readSize == -1) break;
                 os.write( buffer, 0, readSize );
             }
         }
