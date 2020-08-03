@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.sql.SQLOutput;
 
 public class ClientHandler {
     private final NetworkServer networkServer;
@@ -77,14 +78,20 @@ public class ClientHandler {
                 case GET_FILE:
                     System.out.println("Received 'GET_FILE' command");
                     GetFileCommand getFileCommand = (GetFileCommand) command.getData();
-                    System.out.println(getFileCommand.getFile().getPath()+" "+getFileCommand.getFile().getName());
-                    FileUtility.sendFile(clientSocket, getFileCommand.getFile());
+                    File srcfile = getFileCommand.getSrcfile();
+                    File dstfile = getFileCommand.getDstFile();
+                    System.out.println("SRC: "+srcfile.getPath()+" "+srcfile.length());
+                    System.out.println("DST: "+dstfile.getPath()+" "+dstfile.length());
+                    FileUtility.sendFile(clientSocket, srcfile, getFileCommand.getFileSize());
                     break;
                 case PUT_FILE:
                     System.out.println("Received 'PUT_FILE' command");
                     PutFileCommand putFileCommand = (PutFileCommand) command.getData();
-                    System.out.println(putFileCommand.getFile().getPath()+" "+putFileCommand.getFile().getName());
-                    FileUtility.sendFile(clientSocket, putFileCommand.getFile());
+                    srcfile = putFileCommand.getSrcfile();
+                    dstfile = putFileCommand.getDstFile();
+                    System.out.println("SRC: "+srcfile.getPath()+" "+srcfile.length());
+                    System.out.println("DST: "+dstfile.getPath()+" "+dstfile.length());
+                    FileUtility.getFile(clientSocket, dstfile, putFileCommand.getFileSize());
                     break;
                 default:
                     System.err.println("[ClientHandler]: Unknown type of command : " + command.getType());

@@ -21,7 +21,9 @@ public class NetworkService {
     private ObjectInputStream in;
     private ObjectOutputStream out;
 
-    private ClientController controller;
+    private ClientController clientController;
+
+    private boolean isGetAnswer = false;
 
     public NetworkService(String host, int port) {
         this.host = host;
@@ -29,15 +31,15 @@ public class NetworkService {
     }
 
     public void connect(ClientController controller) throws IOException {
-        this.controller = controller;
+        this.clientController = controller;
         socket = new Socket(host, port);
         in = new ObjectInputStream(socket.getInputStream());
         out = new ObjectOutputStream(socket.getOutputStream());
         //Убрать после реализации авторизации
-        this.controller.setClientLocalPath(Property.getClientsRootPath()+"/"+socket.getLocalPort());
-        this.controller.setClientServerPath(Property.getServerRootPath()+"/"+socket.getLocalPort());
+        this.clientController.setClientLocalPath(Property.getClientsRootPath()+"/"+1);
+        this.clientController.setClientServerPath(Property.getServerRootPath()+"/"+1);
         System.out.println("---------------------------------");
-        System.out.println(this.controller.getClientLocalPath());
+        System.out.println(this.clientController.getClientLocalPath());
         System.out.println("---------------------------------");
         runReadThread();
     }
@@ -49,29 +51,31 @@ public class NetworkService {
                     Command command = (Command) in.readObject();
                     System.out.println("[runReadThread]: readObject ");
                     System.out.println("[runReadThread]: command.getType() -> "+command.getType());
+
                     switch (command.getType()) {
                         case ERROR: {
                             ErrorCommand commandData = (ErrorCommand) command.getData();
                             System.out.println("[NetworkService]: ERROR ");
                             System.out.println(commandData.getErrorMessage());
-                            //controller.showErrorMessage(commandData.getErrorMessage());
+                            isGetAnswer = true;
                             break;
                         }
                         case NAVIGATE: {
-                            //UpdateUsersListCommand commandData = (UpdateUsersListCommand) command.getData();
-                            //List<String> users = commandData.getUsers();
-                          //  controller.updateUsersList(users);
+
                             System.out.println("[NetworkService]: NAVIGATE");
                             NavigateCommand navigateCommandData = (NavigateCommand) command.getData();
-                            controller.setNavigates(navigateCommandData.getNavigates());
-                            controller.setStartStep(false); // убрать после реализации интерфейса
+                            clientController.setNavigates(navigateCommandData.getNavigates());
+                            System.out.println("Navigates().size():"+clientController.getNavigates().size());
+                            isGetAnswer = true;
                             break;
                         }
                         default:
+                            isGetAnswer = true;
                             System.err.println("[NetworkService]: Unknown type of command: " + command.getType());
                     }
                 } catch (IOException e) {
                     System.out.println("Поток чтения был прерван!");
+                    System.out.println(e.getMessage());
                     return;
                 } catch (ClassNotFoundException e) {
                     System.out.println("[NetworkService]: ClassNotFoundException");
@@ -85,18 +89,20 @@ public class NetworkService {
     }
 
     public void sendCommand(Command command) throws IOException {
+        isGetAnswer = false;
         out.writeObject(command);
-    }
-
-    public void GetFile(File n) throws IOException {
-        controller.setStartStep(true);
-        FileUtility.getFile(socket, n);
-        controller.setStartStep(false);
+        //out.reset();
     }
 
     public void PutFile(File f) throws IOException {
-        controller.setStartStep(true);
-        FileUtility.sendFile(socket, f);
-        controller.setStartStep(false);
+        FileUtility.sendFile(socket, f, f.length());
+    }
+
+    public boolean isGetAnswer() {
+        return isGetAnswer;
+    }
+
+    public void GetFile(File f, long len) throws IOException {
+        FileUtility.getFile(socket, f, len);
     }
 }

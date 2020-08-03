@@ -1,7 +1,7 @@
 package ru.geekbrains.client.controller;
 
+import JavaFX.Controller;
 import ru.geekbrains.client.services.NetworkService;
-import ru.geekbrains.common.IO.FileUtility;
 import ru.geekbrains.common.property.Property;
 
 import static ru.geekbrains.common.Command.*;
@@ -11,14 +11,13 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.TimeUnit;
 
 public class ClientController {
     private final NetworkService networkService;
     private List<File> navigates = new CopyOnWriteArrayList<>();
-    private boolean startStep = false;
     private String ClientLocalPath;
     private String ClientServerPath;
+    private Controller controllerFX;
 
     public ClientController(String serverHost, int serverPort) {
         this.networkService = new NetworkService(serverHost, serverPort);
@@ -26,46 +25,7 @@ public class ClientController {
 
     public void runApplication() throws IOException, InterruptedException {
         connectToServer();
-        runTestProgram(); // позднее вместо определенных действий будем поднимать форму
-    }
-
-    private void runTestProgram() throws IOException, InterruptedException {
-        System.out.println("[runTestProgram]: NavigateCommand  запросили список файлов из корня сервера");
-        startStep = true;
-        List<File> files = new LinkedList<>();
-        files.add(new File(Property.getServerRootPath()));
-        networkService.sendCommand(NavigateCommand(files));
-
-        while (startStep){
-            TimeUnit.SECONDS.sleep(1);
-        }
-        for (File n: navigates ) {
-            if (!n.isDirectory()){
-                System.out.println(n.getName()+" "+n.getPath());
-                //читаем файлы с сервера и пишем на локал
-                networkService.sendCommand(GetFileCommand(n));
-                networkService.GetFile(new File(getClientLocalPath()+"/"+n.getName()));
-                while (startStep){
-                    TimeUnit.SECONDS.sleep(1);
-                }
-            }
-        }
-        //теперь просто читаем наши локальные файлы и передаем их на сервер
-        for(File f: new File(getClientLocalPath()).listFiles()){
-            if (!f.isDirectory()) {
-                System.out.println(f.getName() + " " + f.getPath()+" "+getClientServerPath());
-                networkService.sendCommand(PutFileCommand(new File(getClientServerPath()+"/"+f.getName())));
-                networkService.PutFile(f);
-                while (startStep){
-                    TimeUnit.SECONDS.sleep(1);
-                }
-            }
-        }
-
-
-        System.out.println("[runTestProgram]: endCommand");
-        networkService.sendCommand( endCommand() );
-
+        //runTestProgram(); // позднее вместо определенных действий будем поднимать форму
     }
 
     public List<File> getNavigates() {
@@ -74,14 +34,6 @@ public class ClientController {
 
     public void setNavigates(List<File> navigates) {
         this.navigates = navigates;
-    }
-
-    public boolean isStartStep() {
-        return startStep;
-    }
-
-    public void setStartStep(boolean startStep) {
-        this.startStep = startStep;
     }
 
     public void setClientLocalPath(String clientLocalPath) {
@@ -108,5 +60,33 @@ public class ClientController {
             throw e;
         }
     }
+     public void disconnectToServer() throws IOException {
+         System.out.println("[runTestProgram]: endCommand");
+         networkService.sendCommand( endCommand() );
+     }
 
+
+    public void sendNavigateCommand(File dir) throws IOException {
+        List<File> files = new LinkedList<>();
+        files.add(dir);
+        networkService.sendCommand(NavigateCommand(files));
+
+    }
+    public boolean networkServiceIsGetAnswer(){
+        return networkService.isGetAnswer();
+    }
+
+    public void sendToServer(String srcfilename, String dstfilename) throws IOException {
+        System.out.println("[sendToServer]: SRC: "+srcfilename);
+        System.out.println("[sendToServer]: DST: "+dstfilename);
+        networkService.sendCommand(PutFileCommand(new File(srcfilename), new File(dstfilename)));
+        networkService.PutFile(new File(srcfilename));
+    }
+
+    public void GetFromServer(String srcfilename, String dstfilename) throws IOException {
+        System.out.println("[sendToServer]: SRC: "+srcfilename);
+        System.out.println("[sendToServer]: DST: "+dstfilename);
+        networkService.sendCommand(GetFileCommand(new File(srcfilename), new File(dstfilename)));
+        networkService.GetFile(new File(dstfilename), 0);
+    }
 }

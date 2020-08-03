@@ -27,17 +27,17 @@ public class Command implements Serializable {
         return command;
     }
 
-    public static Command GetFileCommand(File file){
+    public static Command GetFileCommand(File srcfile, File dstfile){
         Command command = new Command();
         command.type = CommandType.GET_FILE;
-        command.data = new GetFileCommand(file);
+        command.data = new GetFileCommand(srcfile, dstfile);
         return command;
     }
 
-    public static Command PutFileCommand(File file){
+    public static Command PutFileCommand(File srcfile, File dstfile){
         Command command = new Command();
         command.type = CommandType.PUT_FILE;
-        command.data = new PutFileCommand(file);
+        command.data = new PutFileCommand(srcfile, dstfile);
         return command;
     }
 

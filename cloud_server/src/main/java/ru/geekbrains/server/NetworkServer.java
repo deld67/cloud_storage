@@ -47,12 +47,21 @@ public class NetworkServer {
     }
 
     private void checkAndCreateUserFolder(Socket clientSocket) throws IOException {
+        /*
         System.out.println("[checkAndCreateUserFolder] clientLocalPath:"+Property.getClientsRootPath()+"/"+clientSocket.getPort());
         File file = new File(Property.getClientsRootPath()+"/"+clientSocket.getPort());
         if (!file.exists()) FileUtility.createDirectory(file.getPath());
         file = new File(Property.getServerRootPath()+"/"+clientSocket.getPort());
         System.out.println("[checkAndCreateUserFolder] clientServerPath:"+Property.getServerRootPath()+"/"+clientSocket.getPort());
         if (!file.exists()) FileUtility.createDirectory(file.getPath());
+        */
+        System.out.println("[checkAndCreateUserFolder] clientLocalPath:"+Property.getClientsRootPath()+"/"+1);
+        File file = new File(Property.getClientsRootPath()+"/"+1);
+        if (!file.exists()) FileUtility.createDirectory(file.getPath());
+        file = new File(Property.getServerRootPath()+"/"+1);
+        System.out.println("[checkAndCreateUserFolder] clientServerPath:"+Property.getServerRootPath()+"/"+1);
+        if (!file.exists()) FileUtility.createDirectory(file.getPath());
+
     }
 
     private void  createClientHandler(Socket clientSocket) {

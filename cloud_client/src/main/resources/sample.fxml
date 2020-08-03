@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane alignment="center" hgap="10" vgap="10" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="JavaFX.Controller">
+   <Pane prefHeight="425.0" prefWidth="543.0">
+            <ListView fx:id="localView" layoutX="14.0" layoutY="36.0" onMouseClicked="#sendToServer"  prefHeight="331.0" prefWidth="254.0" />
+            <ListView fx:id="serverView" layoutX="283.0" layoutY="37.0" onMouseClicked="#getFromServer" prefHeight="331.0" prefWidth="240.0" />
+      <TextField fx:id="localPath" disable="true" layoutX="14.0" layoutY="11.0" prefHeight="25.0" prefWidth="254.0" />
+      <TextField fx:id="serverPath" disable="true" layoutX="283.0" layoutY="11.0" prefHeight="25.0" prefWidth="240.0" />
+   </Pane>
+   <columnConstraints>
+      <ColumnConstraints />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints />
+   </rowConstraints>
+</GridPane>

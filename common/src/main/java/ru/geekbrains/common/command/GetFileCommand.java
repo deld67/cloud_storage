@@ -4,14 +4,26 @@ import java.io.File;
 import java.io.Serializable;
 
 public class GetFileCommand implements Serializable {
-    private final File file;
+    private final File srcfile;
+    private final long fileSize;
+    private final File dstFile;
 
-    public GetFileCommand(File file) {
-        this.file = file;
+    public GetFileCommand(File srcfile, File dstFile) {
+        this.srcfile = srcfile;
+        this.dstFile = dstFile;
+        this.fileSize = srcfile.length();
 
     }
 
-    public File getFile() {
-        return file;
+    public File getSrcfile() {
+        return srcfile;
+    }
+
+    public File getDstFile() {
+        return dstFile;
+    }
+
+    public long getFileSize() {
+        return fileSize;
     }
 }

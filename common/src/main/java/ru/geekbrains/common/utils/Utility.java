@@ -11,10 +11,8 @@ public class Utility {
         if (file.exists()){
             File[] files = file.listFiles();
             if (files.length > 0) {
-                System.out.println(file.getPath());
                 for (File f: files) {
                     if (!f.isHidden()) {
-                        //navigates.add( new Navigate( f.getName(), f.getAbsolutePath(), f.isDirectory()) );
                         navigates.add(f);
                     }
                 }
@@ -23,5 +21,19 @@ public class Utility {
         return navigates;
     }
 
+    public static List<String> getFilesString(File file) throws IOException {
+        List<String> navigates = new LinkedList<>();
+        if (file.exists()){
+            File[] files = file.listFiles();
+            if (files.length > 0) {
+                for (File f: files) {
+                    if (!f.isHidden()) {
+                        navigates.add(f.getName());
+                    }
+                }
+            }
+        }
+        return navigates;
+    }
 
 }
