@@ -8,6 +8,9 @@ public class Property {
     private static final String CLIENTS_ROOT_PATH = "C://GeekBrains/cloud/client";
     private static final int MAX_CLIENTS = 3;
     private static final int BUFFER_SIZE = 1024;
+    private static final String SERVER_TYPE = "NIO";
+    private static final byte COMMAND_CHAR = (byte)'$';
+    private static final String COMMAND_DIV = "#";
 
     public static int getConnectionTimeout() {
         return CONNECTION_TIMEOUT;
@@ -34,5 +37,17 @@ public class Property {
 
     public static int getBufferSize() {
         return BUFFER_SIZE;
+    }
+
+    public static String getServerType() {
+        return SERVER_TYPE;
+    }
+
+    public static byte getCommandChar() {
+        return COMMAND_CHAR;
+    }
+
+    public static String getCommandDiv() {
+        return COMMAND_DIV;
     }
 }

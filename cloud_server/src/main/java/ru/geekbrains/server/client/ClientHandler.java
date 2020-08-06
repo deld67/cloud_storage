@@ -14,12 +14,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.sql.SQLOutput;
 
 public class ClientHandler {
     private final NetworkServer networkServer;
     private final Socket clientSocket;
-    private final int clientId = 0;
+    private  int clientId = 0;
 
     private ObjectInputStream in;
     private ObjectOutputStream out;
@@ -68,12 +67,12 @@ public class ClientHandler {
                     System.out.println("Received 'Error' command");
                     ErrorCommand errorCommand = (ErrorCommand) command.getData();
                     System.out.println("Error message:" + errorCommand.getErrorMessage() );
-                    networkServer.sendMessage("321", Command.errorCommand(errorCommand.getErrorMessage()));
+                    networkServer.sendMessage(clientId, Command.errorCommand(errorCommand.getErrorMessage()));
                     break;
                 case NAVIGATE:
                     System.out.println("Received 'NAVIGATE' command");
                     NavigateCommand navigateCommand = (NavigateCommand) command.getData();
-                    networkServer.sendMessage("123", Command.NavigateCommand(networkServer.sendDirList(navigateCommand.getNavigates().get(0))));
+                    networkServer.sendMessage(clientId, Command.NavigateCommand(networkServer.sendDirList(navigateCommand.getNavigates().get(0))));
                     break;
                 case GET_FILE:
                     System.out.println("Received 'GET_FILE' command");
@@ -126,5 +125,13 @@ public class ClientHandler {
 
     public Socket getClientSocket() {
         return clientSocket;
+    }
+
+    public int getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(int clientId) {
+        this.clientId = clientId;
     }
 }

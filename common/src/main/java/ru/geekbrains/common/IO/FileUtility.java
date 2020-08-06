@@ -5,6 +5,9 @@ import ru.geekbrains.common.property.Property;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -12,6 +15,7 @@ import java.util.ListIterator;
 
 public class FileUtility {
     public static void createFile(String fileName) throws IOException {
+        //работа сервера на IO
         File file = new File( fileName );
         if (!file.exists()){
             file.createNewFile();
@@ -19,10 +23,12 @@ public class FileUtility {
     }
 
     public static void createDirectory(String dirName) throws IOException {
+        //работа сервера на IO
         File file = new File( dirName );
         if (!file.exists()){
             file.mkdir();
         }
+
     }
 
     public static void move( File dir, File file, long fileSize) throws IOException {

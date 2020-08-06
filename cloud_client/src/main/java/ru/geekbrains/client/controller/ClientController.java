@@ -2,7 +2,6 @@ package ru.geekbrains.client.controller;
 
 import JavaFX.Controller;
 import ru.geekbrains.client.services.NetworkService;
-import ru.geekbrains.common.property.Property;
 
 import static ru.geekbrains.common.Command.*;
 
